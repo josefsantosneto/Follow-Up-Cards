@@ -1,0 +1,62 @@
+<%- include("partials/header"); -%>
+
+
+ <div class="container mw-100 mh-100 mainDiv">
+    <!-- <div class="container-fluid  bg-transparent border-0 align-top"> -->
+        <div class="row d-inline-table projectsfilter align-top">
+            <div class="col" >
+                <img src="/img/legend.png" alt="">
+            </div>
+        
+            <div class="col">
+                <div class="row">
+                    <div class="col-2 d-flex justify-content-end">
+                        <i class="fa-solid fa-filter d-inline"></i>
+                    </div>
+                    <div class="col">
+                        <form action="/projetos" method="GET">
+                            <input type="text" name="nomeProjeto" placeholder="Nome do Projeto" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
+                            <select id="status" name="status" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
+                                <% items.forEach(function(item){%>
+                                    <option class="d-inline-table" value="<%=item.value %>"><%=item.selection%></option>
+                                    
+                                <%});%>
+                            </select>
+                        </form>
+                    </div>                   
+                    
+                </div>
+            </div>
+
+            </div>
+        </form>
+    <!-- </div> -->
+
+    <% projs.forEach(function(project){ %>
+        
+
+        <a href="/projetos/<%=project._id%>">
+            <div class=<%= project.colorStatus %> >
+                <h3>
+                    <%= project.nomeDoProjeto.substring(0,20) %>
+                </h3>
+                <h4>Etapa Atual: <%= project.setorAtual%></h4>
+                <p>Solicitação: <%= project.numeroSolicitacao%></p>
+                <p>Orgão: <%= project.orgao%></p>
+                <p>Valor:<%= project.valor%></p>
+                
+                <p>Descrição:<%= project.descricao.substring(1,50) + "..."%></p>
+            </div>
+            </a>
+        <% }); %>
+
+        <a class="a" href="/home_menu">Voltar</a>
+    </div>
+    
+    
+
+
+
+
+
+<%- include("partials/footer"); -%>
