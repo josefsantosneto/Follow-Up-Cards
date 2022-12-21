@@ -15,7 +15,7 @@
                     </div>
                     <div class="col">
                         <form action="/projetos" method="GET">
-                            <input type="text" name="nomeProjeto" placeholder="Nome do Projeto" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
+                            <input type="text" name="nomeProjeto" placeholder="Busca Por Palavra Chave" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
                             <select id="status" name="status" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
                                 <% items.forEach(function(item){%>
                                     <option class="d-inline-table" value="<%=item.value %>"><%=item.selection%></option>
@@ -23,6 +23,9 @@
                                 <%});%>
                             </select>
                         </form>
+                        <div class="spinning">
+                            <img class="img-spinning" src="/img/loading.gif" alt="">
+                        </div>
                     </div>                   
                     
                 </div>
@@ -45,7 +48,7 @@
                 <p>Orgão: <%= project.orgao%></p>
                 <p>Valor:<%= project.valor%></p>
                 
-                <p>Descrição:<%= project.descricao.substring(1,50) + "..."%></p>
+                <p>Descrição: <%= project.descricao.substring(0,50) + "..."%></p>
             </div>
             </a>
         <% }); %>

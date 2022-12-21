@@ -694,3 +694,16 @@ a {
   color: #ffffff;
  font-size: 25px;
 }
+
+.spinning {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  mix-blend-mode: multiply;
+  align-items: center;
+
+}
+
+.img-spinning {
+  width: 100px;
+}

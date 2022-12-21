@@ -416,11 +416,12 @@ app.get("/home_menu",function(req,res){
 
 app.get("/projetos", function(req, res){
     if(req.isAuthenticated()) {
-        let filter = {};
+            let filter = {};
+        
         let stringFilter = req.query.nomeProjeto;
 
         if(req.query.nomeProjeto){
-            filter = {nomeDoProjeto:{$regex:stringFilter}};
+            filter = {descricao:{$regex:stringFilter}};
         }else{
             if(req.query.status){
                 if(req.query.status === "all"){
@@ -624,6 +625,9 @@ app.get("/projetos/:projectId", function(req, res){
         const requestedProjectId = req.params.projectId;
 
         Project.findOne({_id: requestedProjectId}, function(err, project){
+            if(err){
+              console.log(err) ;
+            }
             if (project.status === "emAndamento"){
                 var sit = "em andamento";
             }else {
