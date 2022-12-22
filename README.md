@@ -9,3 +9,4 @@ This project was built with more resources than the previous version, and some c
   - node js
   - body-parser
   - passport
+  - EJS
