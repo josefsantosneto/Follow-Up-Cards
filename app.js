@@ -20,7 +20,7 @@ mongoose.set('strictQuery', false)
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({parameterLimit: 100000, extended:true}));
 
 //watch it
 app.use(cookieParser());
@@ -34,9 +34,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// mongoose.connect("mongodb+srv://"+ process.env.CEHAB_SERVER + ".o5ulap5.mongodb.net/projetos", {useNewUrlParser: true});
+
 
 mongoose.connect("mongodb+srv://"+ process.env.DB_KEY +"@cluster0.tnsju.mongodb.net/geosistemas", {useNewUrlParser: true});
+// mongoose.connect("mongodb+srv://"+ process.env.DB_KEY +"@cluster0.tnsju.mongodb.net/geosistemastest", {useNewUrlParser: true});
+
 
 //setting the schemas
 
@@ -102,7 +104,7 @@ passport.serializeUser(function(user, cb) {
     });
   });
 
-//this code was created to add some data into the database
+
 
 
 
@@ -163,23 +165,34 @@ app.get("/updateall", (req,res)=>{
     if(req.isAuthenticated()){
         const session = req.session;
         const userId = session.passport.user.id;
+        let filter = {};
+        let filterValue = req.query.proId;
+        if(req.query.proId){
+            filter = {_id:filterValue}
+        }
+
         User.findOne({_id:userId}, (err,foundUser)=>{
             if(err){
                 console.log(err);      
             }else{
                 if(foundUser.type==="adm"){
                     Project.find({}, (err, foundProject)=>{
-                        res.render("updateall", {projetos:foundProject});
+
+                        Project.findOne(filter, (err, selectedProject)=>{
+                            if(err){
+                                console.log(err);
+                            }
+                            console.log('Projeto',selectedProject._id);
+                            res.render("updateall", {projetos:foundProject, selectedProject: selectedProject});
+                        });
                     });
                 }else{
                     res.redirect("/");
-                    //should be an error redirect here
                 }
             }
         });
     }else{
         res.redirect("/");
-        //shoud redirect to an error which the person has no access
     }
 });
 
@@ -187,12 +200,13 @@ app.post("/updateall", (req, res)=>{
     if(req.isAuthenticated()){
         const session = req.express;
         const userId = req.session.passport.user.id;
+
         User.findOne({_id:userId},(err, foundUser)=>{
            if(foundUser.type === "adm") {
-                const proId = req.body.proId;
+                const proId = req.body.projectid;
                 const nomeProjeto = req.body.nomeprojeto;
                 const descricao = req.body.descricao;
-                const comentAtu = req.body.comentario;
+                const problemComment = req.body.problemComment;
                 const setorAtual = req.body.setorAtual;
                 const orgao = req.body.orgao;
                 const valor = req.body.valor;
@@ -216,11 +230,12 @@ app.post("/updateall", (req, res)=>{
                         console.log(foundProject + "id adicionado atualizado");
                     }
                 });
+                console.log("THIS", proId);
                 Project.findOneAndUpdate({_id:proId},
                     {
                         nomeDoProjeto:nomeProjeto,
                         descricao: descricao,
-                        problemComment:comentAtu,
+                        problemComment:problemComment,
                         setorAtual:setorAtual,
                         orgao: orgao,
                         valor:valor,
@@ -364,6 +379,7 @@ app.get("/deleteupdate", function(req,res){
             User.findOne({_id:userId}, function(err,foundUser){
                 if(foundUser.type==="adm"){
                     Project.find({}, function(err, foundProject){
+
                             if(err){
                                 console.log(err);
                             }else {
@@ -382,6 +398,7 @@ app.get("/deleteupdate", function(req,res){
 app.post("/deleteupdate", function(req,res){
     
     const ids = req.body.checkbox;
+    console.log(ids);
     Project.deleteMany({_id:ids}, function(err){
         if(err){
             console.log(err);
@@ -418,11 +435,11 @@ app.get("/projetos", function(req, res){
     if(req.isAuthenticated()) {
             let filter = {};
         
-        let stringFilter = req.query.nomeProjeto;
+        let stringFilter = req.query.descprojeto;
 
-        if(req.query.nomeProjeto){
-            filter = {descricao:{$regex:stringFilter}};
-        }else{
+        if(req.query.descprojeto){
+            filter = {descricao:{$regex: stringFilter}}
+        }else {
             if(req.query.status){
                 if(req.query.status === "all"){
                     filter={};
@@ -434,7 +451,7 @@ app.get("/projetos", function(req, res){
         }
         
 
-      
+        
         Project.find(filter, function(err, foundProjects){
             const selectList = [
                 {selection:"",
@@ -452,7 +469,9 @@ app.get("/projetos", function(req, res){
                 {selection: "Todos",
                     value: "all"}
             ]
-        
+            if(err){
+                console.log(err);
+            }
             res.render("projects", {projs:foundProjects, items:selectList});
         });
         
@@ -658,13 +677,11 @@ app.get("/projetos/:projectId", function(req, res){
 
 
 app.post("/projectentry", function(req, res){
-    //console.log(userName);
-   //Should get back from here 02/08/2022
+
     if(req.isAuthenticated()){
         const session=req.session;
         const userId = session.passport.user.id;
         const now = new Date();
-        console.log(now);
         const nomeProjeto = req.body.nomeprojeto;
         const numeroSol = req.body.solicitacao;
         const orgao = req.body.orgao;
@@ -715,14 +732,6 @@ app.post("/projectentry", function(req, res){
                     
                 }
             });
-
-
-
-
-        
-       
-
-
 
 
     }else{
@@ -790,6 +799,6 @@ if (port == null || port == "") {
   port = 3000;
 }
 
-app.listen(port, function() {
+app.listen(port, ()=> {
   console.log("Server started successfully");
 });

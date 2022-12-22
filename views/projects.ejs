@@ -15,7 +15,7 @@
                     </div>
                     <div class="col">
                         <form action="/projetos" method="GET">
-                            <input type="text" name="nomeProjeto" placeholder="Busca Por Palavra Chave" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
+                            <input type="text" name="descprojeto" placeholder="Busca Por Palavra Chave" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
                             <select id="status" name="status" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
                                 <% items.forEach(function(item){%>
                                     <option class="d-inline-table" value="<%=item.value %>"><%=item.selection%></option>
@@ -41,12 +41,12 @@
         <a href="/projetos/<%=project._id%>">
             <div class=<%= project.colorStatus %> >
                 <h3>
-                    <%= project.nomeDoProjeto.substring(0,20) %>
+                    <%= project.nomeDoProjeto.substring(0,10) + "..."%>
                 </h3>
                 <h4>Etapa Atual: <%= project.setorAtual%></h4>
                 <p>Solicitação: <%= project.numeroSolicitacao%></p>
                 <p>Orgão: <%= project.orgao%></p>
-                <p>Valor:<%= project.valor%></p>
+                <p>Valor: <%= project.valor.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2}) %> </p>
                 
                 <p>Descrição: <%= project.descricao.substring(0,50) + "..."%></p>
             </div>
