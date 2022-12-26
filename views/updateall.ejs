@@ -10,7 +10,8 @@
                 <div class="row">
                     <div class="row">
                         <div class="col-12 text-center">
-                            <select id="projeto" name="proId" class="w-50 text-center" onFocusOut="this.form.submit()">
+                            <select id="projeto" name="proId" class="w-50 text-center" onchange="this.form.submit()">
+                                <option value= ""></option>
                                 <%projetos.forEach(function(projeto){%>
                                     <option value= "<%=projeto._id%>"><%=projeto.nomeDoProjeto%></option>
                                 <%})%>
@@ -26,10 +27,10 @@
                 <div class="col-2 text-white">Nome do Projeto</div>
                 <div class="col-2 text-white">Descrição</div>
                 <div class="col-2 text-white">Comentario Atualização</div>
-                <div class="col-1 text-white">Setor Atual</div>               
+                <div class="col-1 text-white">Centro de Custo</div>               
                 <div class="col-1 text-white">Número do Contrato</div>
                 <div class="col-1 text-white">Valor</div>
-                <div class="col-1 text-white">Número de Solicitação</div>
+                <div class="col-1 text-white">Orgão</div>
                 <div class="col-1 text-white">Data Início</div>
                 <div class="col-1 text-white">Data Término</div>
                 
@@ -45,10 +46,10 @@
                 <div class="col-2"><input class="rep-field w-100" name="nomeprojeto" type="text" value="<%=selectedProject.nomeDoProjeto%>"></div>
                 <div class="col-2"><input class="rep-field w-100" name="descricao" type="text" value="<%=selectedProject.descricao%>"></div>
                 <div class="col-2"><input class="rep-field w-100"  name="problemComment" type="text" value="<%=selectedProject.problemComment%>"></div>
-                <div class="col-1"><input class="rep-field w-100"  name="setorAtual" type="text" value="<%=selectedProject.setorAtual%>"></div>
+                <div class="col-1"><input class="rep-field w-100"  name="centrocusto" type="text" value="<%=selectedProject.centroCusto%>"></div>
                 <div class="col-1"><input class="rep-field w-100"  name="numerocontrato" type="text" value="<%=selectedProject.numeroContrato%>"></div>
-                <div class="col-1"><input class="rep-field w-100"  name="valor" type="text" value="<%=selectedProject.valor%>"></div>
-                <div class="col-1"><input class="rep-field w-100"  name="numeroSol" type="text" value="<%=selectedProject.numeroSolicitacao%>"></div>
+                <div class="col-1"><input class="rep-field w-100"  name="valor" type="text" value="<%=selectedProject.valor.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%>"></div>
+                <div class="col-1"><input class="rep-field w-100"  name="orgao" type="text" value="<%=selectedProject.orgao%>"></div>
                 <div class="col-1"><input class="rep-field w-100"  name="dataInicio" type="date" value="<%=selectedProject.dataInicio%>"></div>
                 <div class="col-1"><input class="rep-field w-100"  name="dataTermino" type="date" value="<%=selectedProject.dataTermino%>"></div>
     

@@ -57,13 +57,13 @@ const userSchema = new mongoose.Schema({
 
 const projectSchema = new mongoose.Schema({
     nomeDoProjeto: String,
-    numeroSolicitacao: String,
+    centroCusto: String,
     orgao: String,
     valor: Number,
     descricao: String,
     createdBy: [userSchema],
-    dataInicio: String,
-    dataTermino: String,
+    dataInicio: Date,
+    dataTermino: Date,
     createdIn: String,
     status: String,
     colorStatus: String,
@@ -116,15 +116,12 @@ app.get('/data',(req,res)=>{
         if(err){
             console.log(err);
         }else{
-            console.log(foundUser);
-
-            console.log(data.file[0].nomeDoProjeto);
+   ;
             data.file.forEach((file)=>{
                 const project = new Project({...file, createdBy:foundUser, ultimaAtualizacao:foundUser});
                 project.save();
             });
             res.redirect("/home_menu");
-            console.log("Database updated");
             
         }
     });
@@ -163,6 +160,7 @@ app.post("/", function(req,res){
 
 app.get("/updateall", (req,res)=>{
     if(req.isAuthenticated()){
+        
         const session = req.session;
         const userId = session.passport.user.id;
         let filter = {};
@@ -178,11 +176,28 @@ app.get("/updateall", (req,res)=>{
                 if(foundUser.type==="adm"){
                     Project.find({}, (err, foundProject)=>{
 
+                        if(foundProject === null){
+                            setTimeout(()=>{
+                                res.write("<h1>Ainda não há registros de projetos</h1>");
+                            }, 3000);
+                            res.redirect("/home_menu");
+
+                        }
+
                         Project.findOne(filter, (err, selectedProject)=>{
                             if(err){
                                 console.log(err);
+                            }else if( selectedProject ===null ){
+                                setTimeout(()=>{
+                                    res.write("<h1>Ainda não há registros de projetos</h1>");
+                                }, 15000);
+                                res.redirect("/home_menu");
+                                res.end;
+                               
+                                
+                                return console.log("No projects yet");
                             }
-                            console.log('Projeto',selectedProject._id);
+                    
                             res.render("updateall", {projetos:foundProject, selectedProject: selectedProject});
                         });
                     });
@@ -210,45 +225,50 @@ app.post("/updateall", (req, res)=>{
                 const setorAtual = req.body.setorAtual;
                 const orgao = req.body.orgao;
                 const valor = req.body.valor;
-                const numeroSol = req.body.numeroSol;
+                const centroCusto = req.body.centrocusto;
 
                 const dateIn = new Date(req.body.dataInicio);
                 const dateOut = new Date(req.body.dataTermino);
         
-                function ConversorData(date) {
-                    const dd = String(date.getDate()).padStart(2,'0');
-                    const mm = String(date.getMonth()+1).padStart(2,'0');
-                    const yyyy = date.getFullYear();
-                    return (dd+"/"+mm+"/"+yyyy);
+
+                const dataInicio = new Date(dateIn.setDate(dateIn.getDate()+1));
+                const dataTermino = new Date(dateOut.setDate(dateOut.getDate()+1));
+                const update = {};
+
+                dataInicio == 'Invalid Date' ? upDate = {
+                    nomeDoProjeto:nomeProjeto,
+                    descricao: descricao,
+                    problemComment:problemComment,
+                    setorAtual:setorAtual,
+                    orgao: orgao,
+                    valor:valor,
+                    centroCusto: centroCusto,
+                }: upDate = {
+                    nomeDoProjeto:nomeProjeto,
+                    descricao: descricao,
+                    problemComment:problemComment,
+                    setorAtual:setorAtual,
+                    orgao: orgao,
+                    valor:valor,
+                    centroCusto: centroCusto,
+                    dataInicio: dataInicio,
+                    dataTermino:dataTermino,
                 }
-        
-                const dataInicio = ConversorData(dateIn);
-                const dataTermino = ConversorData(dateOut);
 
                 Project.findOneAndUpdate({_id:proId},{$push: {ultimaAtualizacao: foundUser}}, function(err, foundProject){
-                    if(!err){
-                        console.log(foundProject + "id adicionado atualizado");
+                    if(err){
+
+                        console.log('error', err);
                     }
                 });
-                console.log("THIS", proId);
-                Project.findOneAndUpdate({_id:proId},
-                    {
-                        nomeDoProjeto:nomeProjeto,
-                        descricao: descricao,
-                        problemComment:problemComment,
-                        setorAtual:setorAtual,
-                        orgao: orgao,
-                        valor:valor,
-                        numeroSolicitacao:numeroSol,
-                        dataInicio: dataInicio,
-                        dataTermino:dataTermino,
 
-                    }, function (err, foundProject){
-                        if(!err){
-                            console.log(foundProject + "projeto atualizado.");
+                Project.findOneAndUpdate({_id:proId}, upDate, (err, foundProject)=> {
+                        if(err){
+                            console.log("error", err);
                         }
                     });
-                    res.redirect("/menuadm");
+             
+                    res.redirect("/updateall");
 
                 
 
@@ -267,7 +287,7 @@ app.get("/deleteuser", (req,res)=>{
     if(req.isAuthenticated()){
         const session = req.session;
         const userId = session.passport.user.id;
-        console.log(userId);
+ 
 
         User.findOne({_id:userId}, (err, foundUser)=>{
             if(foundUser.type === "adm"){
@@ -398,7 +418,6 @@ app.get("/deleteupdate", function(req,res){
 app.post("/deleteupdate", function(req,res){
     
     const ids = req.body.checkbox;
-    console.log(ids);
     Project.deleteMany({_id:ids}, function(err){
         if(err){
             console.log(err);
@@ -438,19 +457,17 @@ app.get("/projetos", function(req, res){
         let stringFilter = req.query.descprojeto;
 
         if(req.query.descprojeto){
-            filter = {descricao:{$regex: stringFilter}}
+            filter = {descricao:{$regex: stringFilter, $options:'i'}}
         }else {
             if(req.query.status){
                 if(req.query.status === "all"){
                     filter={};
                 }else{
                     filter = {status:req.query.status};
-                    console.log(req.query.status);
                 }
             }
         }
         
-
         
         Project.find(filter, function(err, foundProjects){
             const selectList = [
@@ -473,7 +490,7 @@ app.get("/projetos", function(req, res){
                 console.log(err);
             }
             res.render("projects", {projs:foundProjects, items:selectList});
-        });
+        }).collation( { locale: 'en', strength: 2 } );
         
     }else{
         res.redirect("/");
@@ -483,9 +500,13 @@ app.get("/projetos", function(req, res){
 
 
 
-app.get("/novoprojeto", function(req, res){
+app.get("/novoprojeto", (req, res) => {
+
     if(req.isAuthenticated()) {
-        res.render("projectentry");
+        Project.find({},(foundProject)=>{
+            const centroCusto = {project: foundProject}
+            res.render("projectentry", centroCusto);
+        });
     }else{
         res.redirect("/");
     }
@@ -516,7 +537,6 @@ app.get("/statusprojeto", function(req, res){
 
 app.post("/updatestatus", function(req,res){
    
-    //console.log(userName);
    if(req.isAuthenticated()) {
 
         const proId = req.body.proid;
@@ -564,6 +584,7 @@ app.post("/updatestatus", function(req,res){
                 percentageDone:percentageDone
                     }, (err, foundProject)=>{
             if(err){
+                console.log(err);
                 res.redirect("/");
             }
         });
@@ -590,10 +611,6 @@ app.get("/test", function(req,res){
         User.findOne({_id:userId}, (err, foundUser)=>{
             if(err){
                 console.log(err);
-            }else{
-                console.log(foundUser.username);
-                console.log(foundUser.email);
-                
             }
         });
 
@@ -602,42 +619,11 @@ app.get("/test", function(req,res){
     }else{
         res.redirect("/");
     }
-   
-   
-   
-
-    
-    
-    // const session=req.session;
-    // //const userName = session.passport.user.username;
-    // const info = session.passport.user.id;
-    // console.log(info);
-    // console.log("OK")
-    // const now = new Date();
-    // now.setHours(now.getHours()-3);
-    // console.log(now);
-
-    // const a = "The Book";
-    // const b = _.lowerCase(a);
-    // console.log(b);
-
-    // // const d = new Date("2022/08/03");
-    // const d = new Intl.DateTimeFormat('en');
-    // d.formatToParts();
-    
-    // console.log(d);
-    // const a = new Date();
-    // function ConversorData(date) {
-    //     const dd = String(date.getDate()).padStart(2,'0');
-    //     const mm = String(date.getMonth()+1).padStart(2,'0');
-    //     const yyyy = date.getFullYear();
-    //     return (dd+"/"+mm+"/"+yyyy);
-    // }
-
-    // console.log(ConversorData(a));
 
 
 });
+
+
 app.get("/projetos/:projectId", function(req, res){
 
     if(req.isAuthenticated){
@@ -683,7 +669,7 @@ app.post("/projectentry", function(req, res){
         const userId = session.passport.user.id;
         const now = new Date();
         const nomeProjeto = req.body.nomeprojeto;
-        const numeroSol = req.body.solicitacao;
+        const centroCusto = req.body.centrocusto;
         const orgao = req.body.orgao;
         const valor = req.body.valor;
         const descricao = req.body.descricao;
@@ -692,31 +678,30 @@ app.post("/projectentry", function(req, res){
         const numeroContrato = req.body.numeroContrato;
 
         function ConversorData(date) {
-            const dd = String(date.getDate()).padStart(2,'0');
-            const mm = String(date.getMonth()+1).padStart(2,'0');
+            const dd = String(date.getDate());
+            const mm = String(date.getMonth());
             const yyyy = date.getFullYear();
-            return (dd+"/"+mm+"/"+yyyy);
+            return (yyyy+"-"+mm+"-"+dd);
         }
 
-        const dataInicio = ConversorData(dateIn);
-        const dataTermino = ConversorData(dateOut);
+        const dataInicio2 = new Date(dateIn.setDate( dateIn.getDate() + 1 ));
+        const dataTermino2 = new Date(dateOut.setDate(dateOut.getDate() + 1));
         
 
         User.findOne({_id:userId}, (err, foundUser)=>{
                 if(err){
                     console.log(err);
                 }else{
-                    console.log(foundUser);
 
                     const project = new Project({
                         nomeDoProjeto: nomeProjeto,
-                        numeroSolicitacao: numeroSol,
+                        centroCusto: centroCusto,
                         orgao: orgao,
                         valor: String(valor).toLocaleString("de-DE",{minimumFractionDigits:2, maximumFractionDigits:2}),
                         descricao:descricao,
                         createdBy: foundUser,
-                        dataInicio: dataInicio,
-                        dataTermino:dataTermino,
+                        dataInicio: dataInicio2,
+                        dataTermino:dataTermino2,
                         createdIn: now,
                         status: "new",
                         colorStatus: "projectbox",
@@ -772,10 +757,8 @@ app.post("/register", function(req, res){
                             if(err){
                                 console.log(err);
                                 res.redirect("/");
-                            }else{
-                                console.log("User created.");
+                                }
                             }
-                        }
                         );
                     res.redirect("/home_menu");
                 });
@@ -789,9 +772,7 @@ app.post("/register", function(req, res){
 
 });
 
-// app.listen(3000, function(){
-//     console.log("Server running on port 3000 and on your network at the address: https://192.168.0.69:3000");
-// });
+
 
 
 let port = process.env.PORT;

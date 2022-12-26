@@ -22,6 +22,7 @@
                                     
                                 <%});%>
                             </select>
+                   
                         </form>
                         <div class="spinning">
                             <img class="img-spinning" src="/img/loading.gif" alt="">
@@ -44,7 +45,7 @@
                     <%= project.nomeDoProjeto.substring(0,10) + "..."%>
                 </h3>
                 <h4>Etapa Atual: <%= project.setorAtual%></h4>
-                <p>Solicitação: <%= project.numeroSolicitacao%></p>
+                <p>Centro de Custo: <%= project.centroCusto%></p>
                 <p>Orgão: <%= project.orgao%></p>
                 <p>Valor: <%= project.valor.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2}) %> </p>
                 

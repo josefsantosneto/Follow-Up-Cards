@@ -11,8 +11,8 @@
     </div>
 
     <div class="row">
-        <div class="col-6">Data prevista para início do projeto: <%=projeto.dataInicio%></div>
-        <div class="col-6">Data prevista para término do projeto: <%=projeto.dataTermino%></div>
+        <div class="col-6">Data prevista para início do projeto: <%=projeto.dataInicio.toLocaleDateString() %></div>
+        <div class="col-6">Data prevista para término do projeto: <%=projeto.dataTermino.toLocaleDateString() %></div>
     </div>
 
     
@@ -21,6 +21,7 @@
             O valor total deste projeto é de: <%= projeto.valor.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%>
         </div>
         <div class="col-large-auto"> Número do Contrato: <%=projeto.numeroContrato%></div>
+        <div class="col-large-auto"> Centro de Custo: <%=projeto.centroCusto%></div>
     </div>
 
     <div class="col-row">
