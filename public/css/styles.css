@@ -716,3 +716,11 @@ a {
 .img-spinning {
   width: 100px;
 }
+
+.counter {
+  position: absolute;
+  top: 130px;
+  left: 30px;
+  color: #585858;
+  font-size: 20px;
+}

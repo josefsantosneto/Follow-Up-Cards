@@ -12,7 +12,8 @@ const querystring = require("querystring");
 const _ = require("lodash");
 const { connect } = require('http2');
 const data = require('./docs/data.json');
-const test = require('./utils/database');
+
+
 
 const app = express();
 
@@ -118,10 +119,13 @@ app.get('/data',(req,res)=>{
         }else{
    ;
             data.file.forEach((file)=>{
-                const project = new Project({...file, createdBy:foundUser, ultimaAtualizacao:foundUser});
+                const project = new Project({...file, 
+                    createdBy:foundUser, 
+                    ultimaAtualizacao:foundUser,
+                 });
                 project.save();
             });
-            res.redirect("/home_menu");
+            res.redirect("/projetos");
             
         }
     });
@@ -452,7 +456,7 @@ app.get("/home_menu",function(req,res){
 
 app.get("/projetos", function(req, res){
     if(req.isAuthenticated()) {
-            let filter = {};
+            let filter = {status: 'emAndamento'};
         
         let stringFilter = req.query.descprojeto;
 
@@ -486,10 +490,15 @@ app.get("/projetos", function(req, res){
                 {selection: "Todos",
                     value: "all"}
             ]
+
+            const countRegister = foundProjects.length;
+          
+
             if(err){
                 console.log(err);
             }
-            res.render("projects", {projs:foundProjects, items:selectList});
+            res.render("projects", {projs:foundProjects, items:selectList, counter: countRegister});
+
         }).collation( { locale: 'en', strength: 2 } );
         
     }else{
