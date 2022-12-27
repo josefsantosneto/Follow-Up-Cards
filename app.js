@@ -475,10 +475,7 @@ app.get("/projetos", function(req, res){
                     }
                 }
             }
-        
-        console.log("filter", filter);
-        console.log("filter2", filter2);
-        
+
         Project.find({$and:[filter, filter2]},  function(err, foundProjects){
             const selectList = [
                 {selection:"",
