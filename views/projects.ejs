@@ -16,8 +16,8 @@
                     </div>
                     <div class="col">
                         <form action="/projetos" method="GET">
-                            <input type="text" name="descprojeto" placeholder="Busca Por Palavra Chave" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
-                            <select id="status" name="status" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit()">
+                            <input type="text" name="descprojeto" placeholder="Busca Por Palavra Chave" class="col-1 form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit().preventDefault()">
+                            <select id="status" name="status" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit().preventDefault()">
                                 <% items.forEach(function(item){%>
                                     <option class="d-inline-table" value="<%=item.value %>"><%=item.selection%></option>
                                     

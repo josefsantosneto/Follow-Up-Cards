@@ -456,24 +456,30 @@ app.get("/home_menu",function(req,res){
 
 app.get("/projetos", function(req, res){
     if(req.isAuthenticated()) {
-            let filter = {status: 'emAndamento'};
+            let filter = {};
+
+            let filter2 = {status: 'emAndamento'};
         
         let stringFilter = req.query.descprojeto;
 
         if(req.query.descprojeto){
             filter = {descricao:{$regex: stringFilter, $options:'i'}}
-        }else {
-            if(req.query.status){
-                if(req.query.status === "all"){
-                    filter={};
-                }else{
-                    filter = {status:req.query.status};
+        }
+        if(req.query.status){
+            if(req.query.status === "all"){
+                filter2={};
+            }else{
+                filter2 = {status:req.query.status};
+                if(req.query.descprojeto){
+                        filter = {descricao:{$regex: stringFilter, $options:'i'}}
+                    }
                 }
             }
-        }
         
+        console.log("filter", filter);
+        console.log("filter2", filter2);
         
-        Project.find(filter, function(err, foundProjects){
+        Project.find({$and:[filter, filter2]},  function(err, foundProjects){
             const selectList = [
                 {selection:"",
                 value:"all"},
