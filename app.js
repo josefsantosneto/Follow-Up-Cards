@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const querystring = require("querystring");
 const _ = require("lodash");
 const { connect } = require('http2');
-const data = require('./docs/data.json');
+// const data = require('../docs/data.json');
 
 
 
