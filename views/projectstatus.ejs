@@ -7,10 +7,12 @@
             <form action="/updatestatus" method="POST">
                 
                 <h3>Alteração de Status do Projeto</h3>
-                <p>Selecione um projeto</p>
+             
+                <p>Selecione um centro de custo </p>
                 <select id="projeto" name="proid">
                     <%projs.forEach(function(projeto){%>
-                        <option value= "<%=projeto._id%>"><%=projeto.nomeDoProjeto%></option>
+                        <option value= "<%=projeto._id%>"><%=projeto.centroCusto%></option>
+                        
                     <%});%>
 
                  </select>

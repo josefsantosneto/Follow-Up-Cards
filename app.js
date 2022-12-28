@@ -509,7 +509,7 @@ app.get("/projetos", function(req, res){
             }
 
             Project.find({}, (err, proj)=>{
-
+                
                 const projsf = proj;
 
                 res.render("projects", {projs:foundProjects, items:selectList, counter: countRegister, projsf: projsf});
