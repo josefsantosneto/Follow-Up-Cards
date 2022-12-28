@@ -23,6 +23,13 @@
                                     
                                 <%});%>
                             </select>
+                            <select id="centrocusto" name="centrocusto" class="form-control bg-transparent w-70 justify-content-center" onChange="this.form.submit().preventDefault()">
+                                    <option class="d-inline-table" value="" placeholder="Selecione o Centro de Custo">Selecione um Centro de Custo</option>
+                                <% projsf.forEach(function(item){%>
+                                    <option class="d-inline-table" value="<%=item._id %>"><%=item.centroCusto%></option>
+                                    
+                                <%});%>
+                            </select>
                    
                         </form>
                         <div class="spinning">

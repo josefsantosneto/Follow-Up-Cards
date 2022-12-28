@@ -459,11 +459,16 @@ app.get("/projetos", function(req, res){
             let filter = {};
 
             let filter2 = {status: 'emAndamento'};
+
+            let filter3 = {};
         
         let stringFilter = req.query.descprojeto;
 
         if(req.query.descprojeto){
             filter = {descricao:{$regex: stringFilter, $options:'i'}}
+        }
+        if(req.query.centrocusto){
+            filter3 = {_id:req.query.centrocusto}
         }
         if(req.query.status){
             if(req.query.status === "all"){
@@ -476,9 +481,9 @@ app.get("/projetos", function(req, res){
                 }
             }
 
-        Project.find({$and:[filter, filter2]},  function(err, foundProjects){
+        Project.find({$and:[filter, filter2, filter3]},  function(err, foundProjects){
             const selectList = [
-                {selection:"",
+                {selection:"Selecione um status",
                 value:"all"},
                 {selection: "Em Andamento",
                  value: "emAndamento"},
@@ -495,12 +500,22 @@ app.get("/projetos", function(req, res){
             ]
 
             const countRegister = foundProjects.length;
-          
+
+      
+   
 
             if(err){
                 console.log(err);
             }
-            res.render("projects", {projs:foundProjects, items:selectList, counter: countRegister});
+
+            Project.find({}, (err, proj)=>{
+
+                const projsf = proj;
+
+                res.render("projects", {projs:foundProjects, items:selectList, counter: countRegister, projsf: projsf});
+            });
+
+
 
         }).collation( { locale: 'en', strength: 2 } );
         
