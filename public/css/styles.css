@@ -314,7 +314,7 @@ footer {
   margin: auto;
   margin-bottom: 160px;
   width: 300px;
-  height: 510px;
+  height: 730px;
   background-color: #ffffff;
   box-shadow:8px 8px 6px 6px #7f8183;
   border-radius: 15px;
@@ -323,18 +323,29 @@ footer {
   text-align: center;
   
   background-image: url("/src/img/bg_main.png");
+
 }
 
 .formprojetostatus h3{
-  font-size: 20px;
+  font-size: 18px;
   font-family:'Montserrat', sans-serif ;
   font-weight: bold;
   color: rgb(130, 130, 130);
   margin-top: -60px;
   
+
+}
+
+.formprojetostatus h4{
+  font-size: 20px;
+  font-family:'Montserrat', sans-serif ;
+  font-weight:normal;
+  color: rgb(130, 130, 130);
+  margin-top: 10px;
   
 
 }
+
 
 .formprojetostatus textarea{
   border-radius: 5px;
@@ -346,7 +357,7 @@ footer {
 }
 
 .formprojetostatus input{
-  margin-top: 20px;
+  margin-top: 10px;
   border-radius: 5px;
   text-align: center;
   border-width: 0.3px;
@@ -723,4 +734,80 @@ a {
   left: 30px;
   color: #585858;
   font-size: 20px;
+}
+
+.reportsub{
+  color: #474747;
+  font-size: 20px;
+  margin-top: 15px;
+
+}
+
+.med-rep{
+  text-align: center;
+  color: #474747;
+  font-size: 18px;
+  font-weight: 600;
+  border: #000000;
+  border-bottom-width: 1px;
+  border-bottom-style:solid;
+  padding: 0px;
+  
+}
+.med-rep-t{
+  text-align: center;
+  color: #474747;
+  font-size: 16px;
+  font-weight: 400;
+  border: #000000;
+  border-bottom-width: 0.5px;
+  border-bottom-style:solid;
+  margin: 0px;
+  padding: 0px;
+  
+}
+
+.col-4{
+  padding: 0px;
+}
+
+.row{
+  padding: 0px;
+}
+
+.med-rep-c{
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.grid-rep{
+  display: grid;
+  padding-top: 20px;
+  grid-template-columns: [l1] 3fr [l2] 3fr [l3] 3fr [l4];
+  grid-template-rows: [a] 20px [b];
+  padding-bottom: 10px;
+}
+
+.grid-rep-col-a{
+  grid-column-start: l1;
+  grid-column-end: l2;
+  text-align: center;
+}
+
+.grid-rep-col-b{
+  grid-column-start: l2;
+  grid-column-end: l3;
+  text-align: center;
+
+}
+
+.grid-rep-col-c{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  text-align: center;
+
+}
+
+.valormedido{
+  font-weight: 700;
 }

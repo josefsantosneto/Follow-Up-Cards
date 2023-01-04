@@ -54,6 +54,11 @@ const userSchema = new mongoose.Schema({
 });
 
 
+const medicaoSchema = new mongoose.Schema({
+    dataMedicao:Date,
+    descMedicao:String,
+    valorMedicao:Number
+});
 //Should find a way to get the user
 
 const projectSchema = new mongoose.Schema({
@@ -73,7 +78,8 @@ const projectSchema = new mongoose.Schema({
     updatedLastDate: String,
     problemComment: String,
     percentageDone: String,
-    numeroContrato: String
+    numeroContrato: String,
+    medicao:[medicaoSchema]
 });
 
 
@@ -540,6 +546,7 @@ app.get("/novoprojeto", (req, res) => {
 });
 
 app.get("/statusprojeto", function(req, res){
+  
     if(req.isAuthenticated()) {
         const selectList = [
             {selection: "Em Andamento",
@@ -552,9 +559,20 @@ app.get("/statusprojeto", function(req, res){
                 value: "finalizado"}
         ]
 
+     
+        let filterV = {};
+        if(req.query.proid1){
+            filterV = {_id:req.query.proid1}
+        }
+        
+        Project.find({}, (err, foundProjects)=>{
 
-        Project.find({}, function(err, foundProjects){
-            res.render("projectstatus", {projs:foundProjects, selectList:selectList});
+            Project.findOne(filterV,(err, foundPro)=>{
+                    if(err){
+                        console.log(err);
+                    }
+                    res.render("projectstatus", {projs:foundProjects, selectList:selectList, proV:foundPro});
+                });
         });
         
     }else{
@@ -574,6 +592,16 @@ app.post("/updatestatus", function(req,res){
         const problemComment = req.body.problemComment;
         const percentageDone = req.body.percentageDone;
         var colorS = "projectbox";
+        const descMedicao = req.body.descMedicao;
+        const valorMedicao = req.body.valorMedicao;
+        const dateIn = new Date(req.body.dataMedicao);
+        const dataMedicao = new Date(dateIn.setDate(dateIn.getDate()+1));
+
+        const medicao = {
+            dataMedicao: dataMedicao,
+            valorMedicao:valorMedicao,
+            descMedicao:descMedicao,
+        };
 
         const now = new Date();
         
@@ -602,17 +630,25 @@ app.post("/updatestatus", function(req,res){
             });
 
         Project.findOneAndUpdate({_id:proId},
-            {
+            {$set:{
                 status:status,
                 colorStatus:colorS,
                 setorAtual:setor,
                 updatedLastDate: now,
                 problemComment: problemComment,
-                percentageDone:percentageDone
-                    }, (err, foundProject)=>{
+                percentageDone:percentageDone,
+
+                    }}, (err, foundProject)=>{
             if(err){
                 console.log(err);
                 res.redirect("/");
+            }
+        });
+        Project.findOneAndUpdate({_id:proId}, {$push:{
+            medicao:medicao
+        }}, (err, foundProject)=>{
+            if(err){
+                console.log(err);
             }
         });
     
@@ -673,10 +709,16 @@ app.get("/projetos/:projectId", function(req, res){
             a=t[0].length-1;
             const ultimaAtu = project.ultimaAtualizacao[a].username;
             const ultSetor = project.ultimaAtualizacao[a].setor;
-        
+
             
 
-            res.render("projectreport", {projeto: project, projetoStatus: sit, ultimaAtu:ultimaAtu, ultSetor:ultSetor});
+            const ar1 = project.medicao;
+            const valorTotalMedido =ar1.reduce((acc,cV)=>{return acc + cV.valorMedicao},0);
+
+          
+
+
+            res.render("projectreport", {projeto: project, projetoStatus: sit, ultimaAtu:ultimaAtu, ultSetor:ultSetor, valorTotalMedido: valorTotalMedido});
 
         });
 
@@ -804,7 +846,7 @@ app.post("/register", function(req, res){
 
 let port = process.env.PORT;
 if (port == null || port == "") {
-  port = 3000;
+  port = 8000;
 }
 
 app.listen(port, ()=> {

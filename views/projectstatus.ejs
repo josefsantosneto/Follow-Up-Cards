@@ -4,21 +4,25 @@
 
     <div className="formlogin">
         <div class="formprojetostatus">
-            <form action="/updatestatus" method="POST">
-                
-                <h3>Alteração de Status do Projeto</h3>
-             
-                <p>Selecione um centro de custo </p>
-                <select id="projeto" name="proid">
+            
+            <h3>Alteração de Status do Projeto</h3>
+
+            <h4><%=proV.nomeDoProjeto%></h4>
+            <p>Selecione um centro de custo </p>
+
+            <form action="/statusprojeto" method="get">    
+                 <select id="projeto" name="proid1" onchange="this.form.submit()">
+                     <option value=""></option>
                     <%projs.forEach(function(projeto){%>
                         <option value= "<%=projeto._id%>"><%=projeto.centroCusto%></option>
-                        
-                    <%});%>
-
-                 </select>
-                 
-
+                        <%});%>
+           
+                    </select>
+            </form>  
+                
                 <p>Selecione o Status do Projeto</p>
+
+            <form action="/updatestatus" method="POST">
 
                 <select id="status" name="status">
                     <% selectList.forEach(function(select){ %>
@@ -27,18 +31,22 @@
 
                     
                 </select>
+                <input type="hidden" name="proid" value="<%=proV._id %>">
 
-               <textarea type="text" name="problemComment" placeholder="Digite seu comentário sobre situação do projeto"></textarea>
-                
-          
+               <textarea type="text" name="problemComment" placeholder="Digite seu comentário sobre situação do projeto" value="<%=proV.problemComment%>"><%=proV.problemComment%></textarea>
+               <p>% de Andamento do Projeto</p>
 
-               
-               <input type="text" name="percentageDone" placeholder="Digite o % de Andamento">
-                <input type="text" name="setor" placeholder="Digite o setor atual da etapa">
+               <input type="text" name="percentageDone" placeholder="Digite o % de Andamento" value="<%=proV.percentageDone%>">
+               <p>Setor Atual</p>
+               <input type="text" name="setor" placeholder="Digite o setor atual da etapa" value="<%=proV.setorAtual%>">
+               <p>Data Medicao</p>
+               <input type="date" name="dataMedicao">
+               <p>Descrição Medição</p>
+               <input type="text" name="descMedicao" placeholder="Digite a descrição da Medição"> 
+               <p>Valor Medição</p>
+               <input type="number" step="0.01" name="valorMedicao" placeholder="Digite o valor da Medição">
                 
-                
-                
-                <button type="Submit">Cadastrar</button>
+                <button type="Submit">Atualizar</button>
                 <a class="a" href="/home_menu">Voltar ao Menu</a>
                 <a class="a" href="/logout">Sair</a>
 

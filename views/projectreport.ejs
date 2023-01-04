@@ -36,21 +36,62 @@
             O projeto atual se encontra em análise pelo setor <%=projeto.setorAtual%> e sua última atualização foi feita por <%=ultimaAtu%>, do setor <%=ultSetor%>. Seu status encontra-se <%=projetoStatus%>.
         </div>
     </div>
+
     <div class="col-row">
         <div class="col-large-auto">
             Comentário(s) Problema: <%=projeto.problemComment%>
         </div>
     </div>
 
+    <div class="col-row">
+        <div class="col-large-auto">
+            <h3 class="reportsub">Valores Medidos</h3>
+
+        </div>
+    </div>
+
+    
+
+    <div class="grid-rep">
+        <div class="grid-rep-col-a">
+            <p class="med-rep">Data da Medição</p>
+        </div>
+        <div class="grid-rep-col-b">
+            <p class="med-rep">Descrição da Medição</p>
+        </div>
+        <div class="grid-rep-col-c">
+            <p class="med-rep">Valor da Medição</p>
+        </div>
+    </div>
 
 
 
+    <%projeto.medicao.forEach((medicao)=>{%>
+        <div class="grid-rep">
+            <div class="grid-rep-col-a">
+                    <p class="med-rep-t"><%=medicao.dataMedicao.toLocaleDateString()%></p>
+             </div>
+             <div class="grid-rep-col-b">
+                <p class="med-rep-t"><%=medicao.descMedicao%></p>
+            </div>
+            <div class="grid-rep-col-c">
+                <p class="med-rep-t"><%=medicao.valorMedicao.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%></p>
+            </div>
+        </div>
+    <%});%>
+
+    
+        <div class="col-large-auto">
+           O Valor total medido é de:<span class="valormedido"> <%=valorTotalMedido.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%></span>
+        </div>
+
+
+<br/><br/>
     <div class="row">
         <a class="a" href="/projetos"> Voltar para Projetos</a>
     </div>
 
     
-</div>
 
 <%-include("partials/alternativefooter");-%>
 
