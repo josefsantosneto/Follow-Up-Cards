@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const querystring = require("querystring");
 const _ = require("lodash");
 const { connect } = require('http2');
-// const data = require('../docs/data.json');
+const {dateAdjust} = require("./utils/utils.functions");
 
 
 
@@ -241,8 +241,10 @@ app.post("/updateall", (req, res)=>{
                 const dateOut = new Date(req.body.dataTermino);
         
 
-                const dataInicio = new Date(dateIn.setDate(dateIn.getDate()+1));
-                const dataTermino = new Date(dateOut.setDate(dateOut.getDate()+1));
+                const dataInicio = dateAdjust(dateIn);
+                const dataTermino = dateAdjust(dateOut);
+
+
                 const update = {};
 
                 dataInicio == 'Invalid Date' ? upDate = {
@@ -595,7 +597,8 @@ app.post("/updatestatus", function(req,res){
         const descMedicao = req.body.descMedicao;
         const valorMedicao = req.body.valorMedicao;
         const dateIn = new Date(req.body.dataMedicao);
-        const dataMedicao = new Date(dateIn.setDate(dateIn.getDate()+1));
+        const dataMedicao = dateAdjust(dateIn);
+
 
         const medicao = {
             dataMedicao: dataMedicao,
@@ -753,8 +756,8 @@ app.post("/projectentry", function(req, res){
             return (yyyy+"-"+mm+"-"+dd);
         }
 
-        const dataInicio2 = new Date(dateIn.setDate( dateIn.getDate() + 1 ));
-        const dataTermino2 = new Date(dateOut.setDate(dateOut.getDate() + 1));
+        const dataInicio2 = dateAdjust(dateIn);
+        const dataTermino2 = dateAdjust(dateOut);
         
 
         User.findOne({_id:userId}, (err, foundUser)=>{

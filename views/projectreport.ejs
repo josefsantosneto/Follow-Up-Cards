@@ -11,8 +11,8 @@
     </div>
 
     <div class="row">
-        <div class="col-6">Data prevista para início do projeto: <%=projeto.dataInicio.toLocaleDateString() %></div>
-        <div class="col-6">Data prevista para término do projeto: <%=projeto.dataTermino.toLocaleDateString() %></div>
+        <div class="col-6">Data prevista para início do projeto: <%=projeto.dataInicio.toLocaleDateString("pt-BR") %></div>
+        <div class="col-6">Data prevista para término do projeto: <%=projeto.dataTermino.toLocaleDateString("pt-BR") %></div>
     </div>
 
     
@@ -26,7 +26,7 @@
 
     <div class="col-row">
         <div class="col-large-auto">
-            Desenvolvimento do Projeto: <%=projeto.percentageDone%> %
+            Desenvolvimento do Projeto: <%=(valorTotalMedido / projeto.valor) * 100 %> %
         </div>
     </div>
 
@@ -52,14 +52,14 @@
 
     
 
-    <div class="grid-rep">
-        <div class="grid-rep-col-a">
+    <div class="row">
+        <div class="col-4">
             <p class="med-rep">Data da Medição</p>
         </div>
-        <div class="grid-rep-col-b">
+        <div class="col-4">
             <p class="med-rep">Descrição da Medição</p>
         </div>
-        <div class="grid-rep-col-c">
+        <div class="col-4">
             <p class="med-rep">Valor da Medição</p>
         </div>
     </div>
@@ -67,14 +67,14 @@
 
 
     <%projeto.medicao.forEach((medicao)=>{%>
-        <div class="grid-rep">
-            <div class="grid-rep-col-a">
-                    <p class="med-rep-t"><%=medicao.dataMedicao.toLocaleDateString()%></p>
+        <div class="row">
+            <div class="col-4">
+                    <p class="med-rep-t"><%=medicao.dataMedicao.toLocaleDateString("pt-BR")%></p>
              </div>
-             <div class="grid-rep-col-b">
+             <div class="col-4">
                 <p class="med-rep-t"><%=medicao.descMedicao%></p>
             </div>
-            <div class="grid-rep-col-c">
+            <div class="col-4">
                 <p class="med-rep-t"><%=medicao.valorMedicao.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%></p>
             </div>
         </div>
