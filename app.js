@@ -79,7 +79,9 @@ const projectSchema = new mongoose.Schema({
     problemComment: String,
     percentageDone: String,
     numeroContrato: String,
-    medicao:[medicaoSchema]
+    medicao:[medicaoSchema],
+    gestor:String,
+    projectType:String
 });
 
 

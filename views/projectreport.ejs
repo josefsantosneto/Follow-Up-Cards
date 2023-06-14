@@ -68,13 +68,13 @@
 
     <%projeto.medicao.forEach((medicao)=>{%>
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-2">
                     <p class="med-rep-t"><%=medicao.dataMedicao.toLocaleDateString("pt-BR")%></p>
              </div>
-             <div class="col-4">
+             <div class="col-lg-8">
                 <p class="med-rep-t"><%=medicao.descMedicao%></p>
             </div>
-            <div class="col-4">
+            <div class="col-sm-2">
                 <p class="med-rep-t"><%=medicao.valorMedicao.toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})%></p>
             </div>
         </div>
